@@ -265,8 +265,7 @@
           this.state.frame = 0;
         }
         this.sprite.css({
-          backgroundPositionX: "-" + ((this.state.frame % SPRITE.line) * SPRITE.w + 60) + "px",
-          backgroundPositionY: "-" + ((Math.round(this.state.frame / SPRITE.line) - 1) * SPRITE.h) + "px"
+          backgroundPosition: "-" + ((this.state.frame % SPRITE.line) * SPRITE.w + 60) + "px -" + ((Math.round(this.state.frame / SPRITE.line) - 1) * SPRITE.h) + "px"
         });
         this.state.frame++;
         return setTimeout(this.nextFrame, SPRITE.speed);
@@ -332,12 +331,13 @@
         return this.app.message = '';
       },
       onMovableClick: function(e) {
+        console.log(e);
         if (this.app.user == null) {
           return;
         }
         angular.extend(this.app.user, {
           x: e.layerX + 40,
-          y: e.y - 90
+          y: e.clientY - 90
         });
         return this.$scope.$apply();
       }

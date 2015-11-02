@@ -209,8 +209,9 @@ app.directive "chicken",
         nextFrame: ->
             @state.frame = 0 if @state.frame > SPRITE[@state.name]
             @sprite.css
-                backgroundPositionX: "-#{((@state.frame % SPRITE.line) * SPRITE.w + 60)}px"
-                backgroundPositionY: "-#{((Math.round((@state.frame) / SPRITE.line) - 1) * SPRITE.h)}px"
+                backgroundPosition: "-#{((@state.frame % SPRITE.line) * SPRITE.w + 60)}px -#{((Math.round((@state.frame) / SPRITE.line) - 1) * SPRITE.h)}px"
+                #backgroundPositionX: "-#{((@state.frame % SPRITE.line) * SPRITE.w + 60)}px"
+                #backgroundPositionY: "-#{((Math.round((@state.frame) / SPRITE.line) - 1) * SPRITE.h)}px"
             @state.frame++
             setTimeout @nextFrame, SPRITE.speed
 
@@ -267,10 +268,11 @@ app.directive "controls",
             @app.message = ''
 
         onMovableClick: (e)->
+            console.log e
             return unless @app.user?
             angular.extend @app.user,
                 x: e.layerX + 40
-                y: e.y - 90
+                y: e.clientY - 90
             @$scope.$apply()
 
     events:
