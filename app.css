@@ -73,16 +73,16 @@ body {
   cursor: pointer;
 }
 .chicken .sprite.idle {
-  background-image: url("../img/idle.png");
+  background-image: url("/img/idle.png");
 }
 .chicken .sprite.cluck {
-  background-image: url("../img/cluck.png");
+  background-image: url("/img/cluck.png");
 }
 .chicken .sprite.move {
-  background-image: url("../img/move.png");
+  background-image: url("/img/move.png");
 }
 .chicken .sprite.poop {
-  background-image: url("../img/poop.png");
+  background-image: url("/img/poop.png");
 }
 .chicken .nickname {
   white-space: nowrap;

@@ -37,6 +37,9 @@ app.factory FACTORY,
     fartSound: null # fart sound
     cleanSound: null # clean up sound
 
+    # preload pictures
+    preload: ['idle', 'cluck', 'move', 'poop']
+
     # return random number between min and max
     rand: (min, max)->
         [max, min] = [min, 0] unless max?
@@ -51,9 +54,14 @@ app.factory FACTORY,
     playCleanUpSound: ->
         @cleanSound.play()
 
-    # Set "ask for name" state
+
+    onImageLoad: (e)->
+        @preload.pop()
+        @app.state = APP_STATE.ASK_NAME unless @preload.length
+        @$rootScope.$apply()
+
     onUserFirebaseObjectLoaded: ->
-        @app.state = APP_STATE.ASK_NAME
+        setTimeout @onImageLoad, 0
 
     # Database login handler
     onAuthAnonymously: (error, authData)->
@@ -72,6 +80,12 @@ app.factory FACTORY,
             @app.poops = @$firebaseArray @db.child('poops').limitToLast(100)
 
     init: ->
+        @preload.forEach (filename)=>
+            img = new Image()
+            img.src = "/img/#{filename}.png"
+            img.onload = @onImageLoad
+        @preload.push 'onUserFirebaseObjectLoaded flag'
+
         @cluckSounds.push(new Sound("cluck#{i}")) for i in [0..2]
         @fartSound = new Sound 'fart'
         @cleanSound = new Sound 'clean'
@@ -268,7 +282,6 @@ app.directive "controls",
             @app.message = ''
 
         onMovableClick: (e)->
-            console.log e
             return unless @app.user?
             angular.extend @app.user,
                 x: e.layerX + 40

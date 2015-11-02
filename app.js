@@ -54,6 +54,7 @@
     cluckSounds: [],
     fartSound: null,
     cleanSound: null,
+    preload: ['idle', 'cluck', 'move', 'poop'],
     rand: function(min, max) {
       var ref;
       if (max == null) {
@@ -70,8 +71,15 @@
     playCleanUpSound: function() {
       return this.cleanSound.play();
     },
+    onImageLoad: function(e) {
+      this.preload.pop();
+      if (!this.preload.length) {
+        this.app.state = APP_STATE.ASK_NAME;
+      }
+      return this.$rootScope.$apply();
+    },
     onUserFirebaseObjectLoaded: function() {
-      return this.app.state = APP_STATE.ASK_NAME;
+      return setTimeout(this.onImageLoad, 0);
     },
     onAuthAnonymously: function(error, authData) {
       var userReference;
@@ -92,6 +100,15 @@
     },
     init: function() {
       var i, j;
+      this.preload.forEach((function(_this) {
+        return function(filename) {
+          var img;
+          img = new Image();
+          img.src = "/img/" + filename + ".png";
+          return img.onload = _this.onImageLoad;
+        };
+      })(this));
+      this.preload.push('onUserFirebaseObjectLoaded flag');
       for (i = j = 0; j <= 2; i = ++j) {
         this.cluckSounds.push(new Sound("cluck" + i));
       }
@@ -331,7 +348,6 @@
         return this.app.message = '';
       },
       onMovableClick: function(e) {
-        console.log(e);
         if (this.app.user == null) {
           return;
         }
