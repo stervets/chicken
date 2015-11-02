@@ -1,0 +1,60 @@
+doctype html
+html(ng-app='CluckingClubApplication')
+    head
+        title Clucking demo
+        meta(http-equiv="Content-Type",content="text/html; charset=UTF-8")
+        link(type='text/css', href='/app.css', rel='stylesheet')
+        script(src='/lib/jquery/dist/jquery.min.js')
+        script(src='/lib/underscore/underscore-min.js')
+        script(src='/lib/angularjs/angular.min.js')
+        script(src='/lib/angular-animate/angular-animate.min.js')
+        script(src='/lib/firebase/firebase.js')
+        script(src='/lib/angularfire/dist/angularfire.min.js')
+        script(src='/lib/triangle/triangle.min.js')
+        script(src='config.js')
+        script(src='app.js')
+
+        //templates
+        script#jsChicken(type='text/ng-template')
+            .chicken(style="left: {{chicken.x}}px;top: {{chicken.y}}px")
+                .nickname(ng-class="{user: app.user.$id==chicken.$id}") {{chicken.name}}
+                .msg(ng-show='chicken.time') {{chicken.message}}
+                .sprite(ng-class="[state.name, state.reversed]", ng-click='onChickenClick()')
+
+    body(ng-controller='MainController')
+        #content
+            #view
+                .controls(controls, ng-if="app.state==APP_STATE.READY")
+                    .movable
+                    .form
+                        .background
+                        .inputs
+                            form(ng-submit="sendMessage()")
+                                input.text(ng-model='app.message', maxlength=100, autofocus)
+                                input.submit(type='submit', value='Send')
+                .poop(style="left: {{poop.x}}px; top: {{poop.y}}px" ng-repeat='poop in app.poops', ng-click='addScore(poop)')
+
+                chicken(model='chicken', ng-repeat="chicken in app.users")
+
+                .login(ng-if="app.state<APP_STATE.READY")
+                    .loading.message(ng-show='app.state==APP_STATE.LOADING') Loading...
+                    .name.message(ng-show='app.state==APP_STATE.ASK_NAME')
+                        form(ng-submit='onEnterName()')
+                            p Enter your name
+                            input.name-input(ng-model="user.name", maxlength=15, autofocus)
+                            input(type='submit', value="Ok, go!")
+                    .error.message(ng-show='app.state==APP_STATE.ERROR') {{app.error}}
+            #score
+                h3 Top score
+                ul
+                    li(ng-repeat="chicken in app.users")
+                        b {{chicken.name}}:
+                        |&nbsp;{{chicken.score}}
+
+        p Your chicken is yellow. Try to click on the ground, your chicken and others. Try to click on poops, and send some mesages. Have fun!
+        p
+            | Author:&nbsp;
+            a(target='_blank', href='https://ru.linkedin.com/in/lisov') Mikhail Lisov
+            |, source code:&nbsp;
+            a(target='_blank', href='https://github.com/stervets/chicken') https://github.com/stervets/chicken
+
